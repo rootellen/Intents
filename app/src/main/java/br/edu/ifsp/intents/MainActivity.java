@@ -1,19 +1,22 @@
 package br.edu.ifsp.intents;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import static android.content.Intent.ACTION_VIEW;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import br.edu.ifsp.intents.databinding.ActivityMainBinding;
 
@@ -23,9 +26,13 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String PARAMETRO = "PARAMETRO";
 
-    private final int OUTRA_ACTIVITY_REQUEST_CODE = 0;
+    //private final int OUTRA_ACTIVITY_REQUEST_CODE = 0;
 
     private ActivityResultLauncher<Intent> outraActivityResultLauncher;
+
+    private ActivityResultLauncher<Intent> selecionarImagemActivityResultLauncher;
+
+    private ActivityResultLauncher<Intent> escolherAplicativoActivityResultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +52,25 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        selecionarImagemActivityResultLauncher = registerForActivityResult( new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK){
+                        Intent visualizar = new Intent(ACTION_VIEW);
+                        visualizar.setData(result.getData().getData());
+                        startActivity(visualizar);
+                    }
+                });
+
+        escolherAplicativoActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK){
+                        Intent visualizar = new Intent(ACTION_VIEW);
+                        visualizar.setData(result.getData().getData());
+                        startActivity(visualizar);
+                    }
+                });
+
     }
 
     @Override
@@ -73,29 +99,35 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.viewMi: {
+                Intent abrirNavegadorIntent = new Intent(ACTION_VIEW);
+                abrirNavegadorIntent.setData(Uri.parse(activityMainBinding.parametroET.getText().toString()));
+                startActivity(abrirNavegadorIntent);
 
                 return true;
             }
             case R.id.callMi: {
-
+                verifyCallPhonePermission();
                 return true;
             }
             case R.id.dialMi: {
-
+                Intent discarIntent = new Intent(Intent.ACTION_DIAL);
+                discarIntent.setData(Uri.parse("tel: " + activityMainBinding.parametroET.getText().toString()));
+                startActivity(discarIntent);
                 return true;
             }
             case R.id.pickMi: {
-
+                selecionarImagemActivityResultLauncher.launch(getPickageImageIntent());
                 return true;
             }
             case R.id.chooserMi: {
-
+                Intent escolherActivityIntent = new Intent(Intent.ACTION_CHOOSER);
+                escolherActivityIntent.putExtra(Intent.EXTRA_INTENT, getPickageImageIntent());
+                escolherActivityIntent.putExtra(Intent.EXTRA_TITLE, "Escolha um app para selecionar imagem");
+                escolherAplicativoActivityResultLauncher.launch(escolherActivityIntent);
                 return true;
             }
-            default: {
-                return false;
-            }
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -140,4 +172,33 @@ public class MainActivity extends AppCompatActivity {
 //            activityMainBinding.retornoTV.setText(retorno);
 //        }
 //    }
+
+    private Intent getPickageImageIntent(){
+        Intent pegarImagemIntent = new Intent(Intent.ACTION_PICK);
+        String diretorioImagens = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath();
+        pegarImagemIntent.setDataAndType(Uri.parse(diretorioImagens), "image/*");
+
+        return pegarImagemIntent;
+    }
+
+    private void verifyCallPhonePermission() {
+        Intent ligarIntent = new Intent(Intent.ACTION_CALL);
+        ligarIntent.setData(Uri.parse("tel: " + activityMainBinding.parametroET.getText().toString()));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED){
+                startActivity(ligarIntent);
+            }   else{
+                int CALL_PHONE_PERMISSION_REQUEST_CODE = 1;
+                requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, CALL_PHONE_PERMISSION_REQUEST_CODE);
+            }
+        }   else{
+            startActivity(ligarIntent);
+        }
+
+    }
+
+
+
 }
+
