@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <string name="app_name">Intents</string>
+    <string name="call_a_number">Call a number</string>
+    <string name="choose_a_viewer">Choose a viewer</string>
+    <string name="implicit_intents">Implicit intents</string>
+    <string name="open_activity">Open activity</string>
+    <string name="open_activity_explicit_intent">Open activity (explicit intent)</string>
+    <string name="open_the_browser">Open the browser</string>
+    <string name="open_the_dialer">Open the dialer</string>
+    <string name="parameter">Parameter</string>
+    <string name="permission_required_to_call">Permission required to call!</string>
+    <string name="pick_an_image">Pick an image</string>
+    <string name="return_and_close">Return and close</string>
+    <style name="Base.Theme.Intents" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:textColorSecondary">@color/design_default_color_on_primary</item>
+    </style>
+    <style name="Theme.Intents" parent="Base.Theme.Intents"/>
+</resources>

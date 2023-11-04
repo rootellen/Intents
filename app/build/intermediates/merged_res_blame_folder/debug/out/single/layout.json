@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "br.edu.scl.ifsp.sdm.intents.app-mergeDebugResources-30:/layout/activity_main.xml",
+        "source": "br.edu.scl.ifsp.sdm.intents.app-main-33:/layout/activity_main.xml"
+    },
+    {
+        "merged": "br.edu.scl.ifsp.sdm.intents.app-mergeDebugResources-30:/layout/activity_parameter.xml",
+        "source": "br.edu.scl.ifsp.sdm.intents.app-main-33:/layout/activity_parameter.xml"
+    },
+    {
+        "merged": "br.edu.scl.ifsp.sdm.intents.app-mergeDebugResources-30:/layout/toolbar.xml",
+        "source": "br.edu.scl.ifsp.sdm.intents.app-main-33:/layout/toolbar.xml"
+    }
+]
